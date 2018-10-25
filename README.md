@@ -14,6 +14,11 @@ For instructions on what to add under these headers, see the course project assi
 
 ## Must have features
 
+|Index|Feature|Deadline|
+|:----|-------|--------|
+|1|Test feature 01|11.11.2018|
+
+
 ## Planned +2 features
 
 ## Pages and navigation
