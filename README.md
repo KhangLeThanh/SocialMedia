@@ -14,14 +14,59 @@ For instructions on what to add under these headers, see the course project assi
 
 ## Must have features
 
-|Index|Feature|Deadline|
-|:----|-------|--------|
-|1|Test feature 01|11.11.2018|
-
+|Order|Feature/Design|Estimated completion date|
+|:----|-------|-------------------------|
+|1|Base modules|07.11.2018|
+|2|Base views|09.11.2018|
+|3|Base templates|11.11.2018|
+|4|Homer page|13.11.2018|
+|5|User page|15.11.2018|
+|6|User groups|17.11.2018|
+|6|Friend requests component|19.11.2018|
+|6|Profile status component|20.11.2018|
+|7|Comment component|22.11.2018|
+|8|Events page & events components|25.11.2018|
+|9|Discussion page & discussion components|28.11.2018|
+|10|Events & Discussion integration to profile|02.12.2018|
+|11|Events & Discussion integration to profile|04.12.2018|
+|12|Overrall testing|06.12.2018|
 
 ## Planned +2 features
 
+|Order|Feature/Design|Estimated completion date|
+|:----|-------|-------------------------|
+|1|Users, Events, Discusisons are searchable|29.11.2018|
+|1|Email validation on sign up|15.11.2018|
+|1|User password reset|18.11.2018|
+
 ## Pages and navigation
+
+```mermaid
+sequenceDiagram
+    participant Home
+    participant User Profile
+    participant Discussion
+    participant Event
+    
+
+    Home->Home: Sign up a new user
+    Home->Home: Sign in a user
+
+    Home->User Profile: Load current user's profile
+    Home->User Profile: Load searched user's profile
+
+    Home->Discussion: Load all discussions
+
+    Home->Event: Load upcoming events
+
+    Event->Event: When clicked on an event, load that event's page
+
+    Discussion->Discussion: When clicked on a discussion, load that discussion's page
+
+    User Profile-> Event: Navigate to clicked event page from my profile
+    User Profile -> Discussion: Navigate to clicked discussion page from my profile
+    User Profile -> User Profile: Navigate to clicked friend's user profile page
+```
 
 ## Technological considerations
 
