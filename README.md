@@ -69,7 +69,13 @@ sequenceDiagram
 ```
 
 ## Technological considerations
-
+    Suitability for mobile devices
+    maintenance 
+    Compatibility with different desktop browsers
+    security- secure log-in and privacy
+    internet speeds
+    limited resources availble on devices
+    
 ### Django apps in your Django project
 
 ### Needed Django models and their attributes
@@ -81,7 +87,10 @@ sequenceDiagram
 ### Heroku deployment
 
 ## Testing
-
+    Unit tests need to be written
+    User tests(how is user experience?) 
+    Example Django models need to be created to be tested
+    
 ## Project timetable and division of work
 
 >>>
