@@ -11,7 +11,12 @@ The headers that must be present in this document are shown here. They were copi
 For instructions on what to add under these headers, see the course project assignment document, [Appendix 2: Initial project plan document](https://docs.google.com/document/d/1iJ4z8dQzUWht0ABX18RXa5Rp8hY76vcMJvBbxODs3PE/edit?usp=sharing#heading=h.m6xhgmo8x8lz)
 
 ## Course project group information
-
+Khang Le Thanh - 281657 - khang.lethanh@student.tut.fi
+Christopher Allen - 262541 - allen@student.tut.fi
+Chathura Yapa 272515 kotugode@student.tut.fi
+Group name: funnysociety
+Gitlab URL: https://course-gitlab.tut.fi/bwa-2018/bwa-group006
+Heroku URL: https://serene-lowlands-66729.herokuapp.com/
 ## Must have features
 
 |Order|Feature/Design|Estimated completion date|
@@ -85,14 +90,27 @@ sequenceDiagram
 ### Needed Django views and templates
 
 ### Heroku deployment
-
+Heroku app link: https://serene-lowlands-66729.herokuapp.com/
+All members in our group will use it. We will deploy it 2 times per week.
 ## Testing
     Unit tests need to be written
     User tests(how is user experience?) 
     Example Django models need to be created to be tested
     
 ## Project timetable and division of work
-
+|Order|Page|Feature|Khang|Christopher|Chathura|Deadline|
+|:----|----|-------|-----|-----------|-----|-----|
+|1|Database|Creating models.py|-|-|-|-|
+|2|Profile page|Name,Username,Phonenumber,Date of birth, Validation email--|-|-|-|-|
+|3|Profile page|Status(comments)-------------------------|-|-|-|-|
+|4|Profile page|Request list(sent requests/ received requests)|-|-|-|-|
+|5|Profile page|2 buttons for request(ok/decline: notify sender)|-|-|-|-|
+|6|Discussion page|Discussion(delete/leave)|-|-|-|-|
+|7|Profile page|Displayed discussion links|-|-|-|-|
+|8|Profile page|2 buttons for events: Created - Invited|-|-|-|-|
+|9|Created-event-page|Name, description, evente category, duration, place, 2 buttons: create-cancel|-|-|-|-|
+|10|A events-page|Displayed all events links|-|-|-|-|
+|11|Event page|Show event info, invite friend by admin, invte friend by user in the events|-|-|-|-|
 >>>
 _`The Django project in this repo (bwa2018djangoproject), was created for the groups using Heroku Django Starter Template. The information about it left here for educational purposes. The groups are free to remove this text and all the text below it from this file.`_
 # Heroku Django Starter Template
