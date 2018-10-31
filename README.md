@@ -82,7 +82,7 @@ sequenceDiagram
     limited resources availble on devices
     
 ### Django apps in your Django project
-
+Our Django app  is funnysociety
 ### Needed Django models and their attributes
 
 ### URIs
