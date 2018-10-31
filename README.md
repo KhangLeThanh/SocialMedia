@@ -74,7 +74,13 @@ sequenceDiagram
 ```
 
 ## Technological considerations
-
+    Suitability for mobile devices
+    maintenance 
+    Compatibility with different desktop browsers
+    security- secure log-in and privacy
+    internet speeds
+    limited resources availble on devices
+    
 ### Django apps in your Django project
 
 ### Needed Django models and their attributes
@@ -87,7 +93,10 @@ sequenceDiagram
 Heroku app link: https://grisly-zombie-67136.herokuapp.com/
 All members in our group will use it. We will deploy it 2 times per week.
 ## Testing
-
+    Unit tests need to be written
+    User tests(how is user experience?) 
+    Example Django models need to be created to be tested
+    
 ## Project timetable and division of work
 |Order|Page|Feature|Khang|Christopher|Chathura|Deadline|
 |:----|----|-------|-----|-----------|-----|-----|
