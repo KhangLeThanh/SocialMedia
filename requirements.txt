@@ -56,6 +56,7 @@ pyobjc-framework-WebKit==2.5.1
 pyOpenSSL==0.13.1
 pyparsing==2.0.1
 python-dateutil==1.5
+python-decouple==3.1
 pytz==2013.7
 scipy==0.13.0b1
 singledispatch==3.4.0.3
