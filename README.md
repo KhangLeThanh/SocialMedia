@@ -46,6 +46,10 @@ Heroku URL: https://grisly-zombie-67136.herokuapp.com/
 
 ## Pages and navigation
 
+1 Overall website  navigation :
+
+Below diagram illustrates the main navigation points between Home page, User profile page,  Discussion page and events page.
+
 ```mermaid
 sequenceDiagram
     participant Home
