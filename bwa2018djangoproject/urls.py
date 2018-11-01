@@ -20,5 +20,8 @@ from django.conf.urls import url
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-   
+    url(r'^$', home, name='home'),
+    url(r'^profile/$', profile, name='profile'),
+    url(r'^discussion/$', discussion, name='discussion'),
+    url(r'^event/$', event, name='event'),
 ]
