@@ -78,28 +78,36 @@ sequenceDiagram
 ```
 
 ## Technological considerations
-    Suitability for mobile devices
-    maintenance 
-    Compatibility with different desktop browsers
-    security- secure log-in and privacy
-    internet speeds
-    limited resources availble on devices
     
 ### Django apps in your Django project
 Our Django app  is funnysociety
+Django database
+Django whitenoise
+Django Pillow
+Django psycopg2
+Django setuptools
 ### Needed Django models and their attributes
+User
 
 ### URIs
-
+Heroku URL https://funnysocietyapp.herokuapp.com/
+web page URLS will follow the following naming convention:
+.../discussion
+.../event/(event no.)
+.../profile/(username)
+.../home
 ### Needed Django views and templates
 
 ### Heroku deployment
 Heroku app link: https://funnysocietyapp.herokuapp.com
 All members in our group will use it. We will deploy it 2 times per week.
 ## Testing
-    Unit tests need to be written
-    User tests(how is user experience?) 
-    Example Django models need to be created to be tested
+    Django test
+    Usabiility test
+    Functionality tests
+    Performance tests
+    Compatibility tests
+    
     
 ## Project timetable and division of work
 |Order|Page|Feature|Khang|Christopher|Chathura|Deadline|
