@@ -92,22 +92,36 @@ User
 ### URIs
 Heroku URL https://funnysocietyapp.herokuapp.com/
 web page URLS will follow the following naming convention:
-.../discussion
-.../event/(event no.)
-.../profile/(username)
-.../home
+.../events -each event will have its own seperate page
+.../events?eventId=1234 - each event page has its own ID
+.../discussions -discussions will be on sepearate pages
+.../discussions?Id=1234 -ID for discussion pages
+.../profile - profile for users 
+.../profile?Id=1234 -ID for user profiles
+.../home -main page of website
+.../home/signUp - page where new users can register
+.../home/signIn - page where current users can log in
 ### Needed Django views and templates
 
 ### Heroku deployment
 Heroku app link: https://funnysocietyapp.herokuapp.com
 All members in our group will use it. We will deploy it 2 times per week.
 ## Testing
-    Django test
-    Usabiility test
-    Functionality tests
-    Performance tests
-    Compatibility tests
     
+    Usabiility test
+	We will test the app with multiple users. The goal of the usability test is to validata that our app is following the standard usability criteria
+ 	For example, users should be able to know how to navigate between pages without a hassle, Users know what each button
+	does and what every term used means just by looking at it. The sessions will be done with multiple users where they are recorded (with their consent) using the system and feedback will be taken from that.
+    Functionality tests
+	Internally, the group members will  test each of the functionalities,
+	if one gorup member develops a functionality then the other two will perform
+	tests on that function
+    Performance tests
+	We will test the website on different operating systems and browsers
+	e.g. Windows, Mac and Linux.The screen reoslutions will also be taken into consideration
+    Compatibility tests
+       The website will be checked on browserstack tool to see if all of the features we have planned
+	will work on different browsers.
     
 ## Project timetable and division of work
 |Order|Page|Feature|Khang|Christopher|Chathura|Deadline|
