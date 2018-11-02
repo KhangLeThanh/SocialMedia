@@ -25,6 +25,4 @@ urlpatterns = [
     url(r'^profile/$', profile, name='profile'),
     url(r'^discussion/$', discussion, name='discussion'),
     url(r'^event/$', event, name='event'),
-   
-   
 ]

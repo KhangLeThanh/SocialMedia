@@ -16,7 +16,7 @@ Christopher Allen - 262541 - allen@student.tut.fi
 Chathura Yapa 272515 kotugode@student.tut.fi
 Group name: funnysociety
 Gitlab URL: https://course-gitlab.tut.fi/bwa-2018/bwa-group006
-Heroku URL: https://grisly-zombie-67136.herokuapp.com/
+Heroku URL: https://funnysocietyapp.herokuapp.com
 ## Must have features
 
 |Order|Feature/Design|Estimated completion date|
@@ -94,7 +94,7 @@ Our Django app  is funnysociety
 ### Needed Django views and templates
 
 ### Heroku deployment
-Heroku app link: https://grisly-zombie-67136.herokuapp.com/
+Heroku app link: https://funnysocietyapp.herokuapp.com
 All members in our group will use it. We will deploy it 2 times per week.
 ## Testing
     Unit tests need to be written
