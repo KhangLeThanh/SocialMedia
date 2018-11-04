@@ -15,11 +15,11 @@ Group name: funnysociety
 
 Members:
 
-    Khang Le Thanh - 281657 - khang.lethanh@student.tut.fi
+* Khang Le Thanh - 281657 - khang.lethanh@student.tut.fi
 
-    Christopher Allen - 262541 - allen@student.tut.fi
+* Christopher Allen - 262541 - allen@student.tut.fi
 
-    Chathura Yapa 272515 kotugode@student.tut.fi
+* Chathura Yapa 272515 kotugode@student.tut.fi
 
 Gitlab URL: https://course-gitlab.tut.fi/bwa-2018/bwa-group006
 
@@ -50,7 +50,9 @@ Heroku URL: https://funnysocietyapp.herokuapp.com
 |1|Users, Events, Discusisons are searchable|29.11.2018|
 |2|Email validation on sign up|15.11.2018|
 |3|User password reset|18.11.2018|
-|4|Use POSTGRESQL |01.11.2018|
+|4|Use POSTGRESQL databse |01.11.2018|
+|5|Use Using Bootstrap for mobile friendliness |20.11.2018|
+
 
 ## Pages and navigation
 
@@ -92,41 +94,160 @@ sequenceDiagram
 Our Django app  is funnysociety
 
 ### Needed Django models and their attributes
-User
+
+(These models and their attibutes are subject to change as the development is progressing)
+
+User: This model class is to hold user informations in the web site
+
+* user = Imported from django.contrib.auth.models
+* id = Primary key
+* firstName = Char field
+* firstName = Char field
+* telephoneNumber = Char field
+* birthDay = Time field
+
+
+Friend : This model class is to maintain the relationship between users. For example, the friend status, who initiated the requests, are the requests pending information will be shown here.
+
+* id = Primary key
+* party1 = Integer field
+* party2 = Integer field
+* timestamp = Time field with a default value of current date time 
+* isPending = Boolean field
+* isReceived = Boolean field
+        
+
+Status: This class model is to keep the information about the profile status that the users make.
+* id = Primary key
+* user = User Model as foreign key
+* text = Char field
+* timestamp = Time field with a default value of current date time 
+
+class Comment(models.Model): This class model will hold the information of the comments that the users make on other users status and discussions. With the "category" field, the comments for status and discussions will be filtered.
+
+* id = Primary key
+* user = User Model as foreign key
+* text = models.CharField(max_length=999)
+* timestamp = Time field with a default value of current date time
+* category = Integer field
+
+
+Discussion: This class model is to keep the informaiton about the discussions that the users create
+* id = Primary key
+* user = User Model as foreign key
+* timestamp = Time field with a default value of current date time
+    
+Event: This class model will be used to keep events information of the site.
+* id = Primary key
+* name = Char field
+* startDate = Time field
+* endDate = Time field
+* venue = Char field
+* timestamp = Time field with a default value of current date time
+* admin = User Model as foreign key
+
+Participant: This class is to keep the information about the participants of an event or a discussion. With the "category", the participants can be filtered.
+* id = Primary key
+* user = User Model as foreign key
+* category= Integer field
+* timestamp = Time field with a default value of current date time
+    
+
 
 ### URIs
 Heroku URL https://funnysocietyapp.herokuapp.com/
 web page URLS will follow the following naming convention:
+
 .../events -each event will have its own seperate page
+
 .../events?eventId=1234 - each event page has its own ID
+
 .../discussions -discussions will be on sepearate pages
+
 .../discussions?Id=1234 -ID for discussion pages
+
 .../profile - profile for users 
+
 .../profile?Id=1234 -ID for user profiles
+
 .../home -main page of website
+
 .../home/signUp - page where new users can register
+
 .../home/signIn - page where current users can log in
+
 ### Needed Django views and templates
+
+(The views and templates are subject to change as the development is progressing)
+
+#### Views
+
+* user_status_json: This view will retrieve status and comment information by the provided user.
+
+* user_friends_json: This view will retrive current friends information by the provided user.
+
+* user_discussions_json: This view will retrive ongoing discussions  by the provided user.
+
+* user_events_json: This view will retirve events information by the provided user.
+
+* discussions_json: This view will retrive all the discussions.
+
+* events_json: This view will retrive all upcoming events.
+
+* discussion_json: This view will retrive all the information about the provided discussion.
+
+* event_json: This view will retrive all the information about the provided event.
+
+
+#### Templates
+
+profile_view: This template will retrieve the below views to illustrate the information:
+
+* user_status_json
+* user_friends_json
+* user_discussions_json
+* user_events_json
+
+discussion_view: This template will retrieve the below views to illustrate the information
+
+* discussion_json
+
+event_view: This template will retrieve the below views to illustrate the information
+
+* event_json
+
+discussions_view:This template will retrieve the below views to illustrate the information
+
+* discussions_json
+
+events_view: This template will retrieve the below views to illustrate the information
+
+* events_json
+
+
 
 ### Heroku deployment
 Heroku app link: https://funnysocietyapp.herokuapp.com
 We create a shared-login in heroku app, so everyone can use it for deploying the heroku app. We will deploy 3 times per week.
 ## Testing
-    
-    Usabiility test
-	We will test the app with multiple users. The goal of the usability test is to validata that our app is following the standard usability criteria
- 	For example, users should be able to know how to navigate between pages without a hassle, Users know what each button
-	does and what every term used means just by looking at it. The sessions will be done with multiple users where they are recorded (with their consent) using the system and feedback will be taken from that.
-    Functionality tests
-	Internally, the group members will  test each of the functionalities,
-	if one gorup member develops a functionality then the other two will perform
-	tests on that function
-    Performance tests
-	We will test the website on different operating systems and browsers
-	e.g. Windows, Mac and Linux.The screen reoslutions will also be taken into consideration
-    Compatibility tests
-       The website will be checked on browserstack tool to see if all of the features we have planned
+
+Usabiility test:
+* We will test the app with multiple users. The goal of the usability test is to validata that our app is following the standard usability criteria
+For example, users should be able to know how to navigate between pages without a hassle, Users know what each button
+does and what every term used means just by looking at it. The sessions will be done with multiple users where they are recorded (with their consent) using the system and feedback will be taken from that.
+   
+Functionality tests:
+* Internally, the group members will  test each of the functionalities,
+if one gorup member develops a functionality then the other two will perform
+tests on that function
+
+Performance tests:
+* We will test the website on different operating systems and browsers
+e.g. Windows, Mac and Linux.The screen reoslutions will also be taken into consideration
+Compatibility tests:
+* The website will be checked on browserstack tool to see if all of the features we have planned
 	will work on different browsers.
+    
     
 ## Project timetable and division of work
 |Order|Page|Feature|Khang|Christopher|Chathura|Deadline|
