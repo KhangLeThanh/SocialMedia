@@ -1,0 +1,21 @@
+.header_signin{
+    padding: 20px;
+    background-color:#1A84FF;
+}
+.header_signin h1,.header_signin p{
+    color: #fff;
+}
+.btn{
+    background-color: #139CFF;
+    border: 1px solid #137bc5;
+    color:#fff;
+}
+.btn:hover{
+    background-color: #137bc5;
+}
+.form-inline{
+    justify-content: flex-end;
+}
+.form-group{
+    margin-right: 3%;
+}
