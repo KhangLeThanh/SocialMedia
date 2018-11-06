@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+#This model is common for everyone- DO NOT Edit without notifying others!
 class SiteUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id = models.AutoField(primary_key=True)
@@ -15,6 +16,9 @@ class SiteUser(models.Model):
     telephoneNumber = models.CharField(max_length=10)
     birthDay = models.TimeField()
 
+
+#Profile models by Chathura: Only Chathura will edit
+#This is a sample table structure, modify as per your requirements
 class Friend(models.Model):
         id = models.AutoField(primary_key=True)
         party1 = models.IntegerField()
@@ -23,26 +27,30 @@ class Friend(models.Model):
         isPending = models.BooleanField()
         isReceived = models.BooleanField()
         
-
 class Status(models.Model):
         id = models.AutoField(primary_key=True)
         user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
         text = models.CharField(max_length=999)
         timestamp = models.TimeField(default=datetime.now, blank=True)
 
-class Comment(models.Model):
+class StatusComment(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
     text = models.CharField(max_length=999)
     timestamp = models.TimeField(default=datetime.now, blank=True)
-    category = models.IntegerField()
+    statusId = models.ForeignKey(Status,on_delete=models.CASCADE)
 
 
+#Discussion models by Le:  Only Le will edit
+#This is a sample table structure, modify as per your requirements
 class Discussion(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
     timestamp = models.TimeField(default=datetime.now, blank=True)
     
+
+#Events models by Chris:   Only Chris will edit
+#This is a sample table structure, modify as per your requirements
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=500)
