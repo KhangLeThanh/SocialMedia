@@ -11,24 +11,24 @@ class SiteUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     id = models.AutoField(primary_key=True)
     firstName = models.CharField(max_length=100)
-    firstName = models.CharField(max_length=100)
-    telephoneNumber = models.CharField(max_length=10)
+    lastName = models.CharField(max_length=100)
+    telephoneNumber = models.CharField(max_length=20)
     birthDay = models.TimeField()
 
 class Friend(models.Model):
-        id = models.AutoField(primary_key=True)
-        party1 = models.IntegerField()
-        party2 = models.IntegerField()
-        timestamp = models.TimeField(default=datetime.now, blank=True)
-        isPending = models.BooleanField()
-        isReceived = models.BooleanField()
+    id = models.AutoField(primary_key=True)
+    party1 = models.IntegerField()
+    party2 = models.IntegerField()
+    timestamp = models.TimeField(default=datetime.now, blank=True)
+    isPending = models.BooleanField()
+    isReceived = models.BooleanField()
         
 
 class Status(models.Model):
-        id = models.AutoField(primary_key=True)
-        user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
-        text = models.CharField(max_length=999)
-        timestamp = models.TimeField(default=datetime.now, blank=True)
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
+    text = models.CharField(max_length=999)
+    timestamp = models.TimeField(default=datetime.now, blank=True)
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
