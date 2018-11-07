@@ -91,8 +91,8 @@ DATABASES = {
         # If your group uses PostgreSQL comment out two lines under this,
         # and add other needed settings.
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Social',
-         'USER': 'postgres',
+        'NAME': 'social',
+        'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
