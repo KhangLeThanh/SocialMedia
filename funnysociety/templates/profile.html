@@ -1,0 +1,84 @@
+{% extends 'index.html' %}
+
+{% block title %}Profile{% endblock %}
+ 
+{% block content %}
+ 
+        {% if not user.is_authenticated %}
+            <section class="header_signin">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h1 style="text-align: center;">FunnySociety</h1>
+                        </div>
+                    </div>    
+                </div>    
+            </section>
+            <section class="wrapper-login-form">
+                <h2>Hi ! Welcome to FunnySociety!</h2>
+                <a href="{% url 'login' %}">Sign In</a>
+                <a href="{% url 'register' %}">Sign Up</a>
+            </section>
+        {% else %}
+            <section class="wrapper-contain-profile">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2>Hi {{ user.first_name }}! Welcome to your profile!</h2>
+                            <h3>What's on your mind,{{ user.first_name }} ?</h3>
+                            <form action="/create_post/" method="POST" id="post-form">
+                                {% csrf_token %} 
+                            <br>
+                                <input id="post-text" type="text" name="status">
+                                <input id="status_post_btn" type="submit" value="Post">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                
+        {% endif %}
+   
+
+
+ 
+
+
+
+<script type="text/javascript"> 
+
+ $(document).ready(function() {
+
+$('#post-form').on('submit', function(event){
+    event.preventDefault();
+    create_post();
+});
+});
+
+function create_post() {
+    $.ajax({
+        url : "create_post/", // end point
+        type : "POST",
+        data : { 
+          the_post : $('#post-text').val(),
+          csrfmiddlewaretoken: '{{ csrf_token }}', // for Django, add csrf_token with data
+           },
+        // On success
+        success : function(json) {
+            $('#post-text').val(''); 
+        },
+
+        // On error
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); 
+        }
+    });
+};
+
+</script>
+    
+{% endblock %}
+
+
+
+

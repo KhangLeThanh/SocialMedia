@@ -1,21 +1,15 @@
-.header_signin{
-    padding: 20px;
-    background-color:#1A84FF;
+h1,h2,h3,h4,h5,p,a,li{
+    font-family: 'Lato', Arial;
 }
-.header_signin h1,.header_signin p{
-    color: #fff;
+
+a, a:hover, a :hover{
+    color:#50C5FB;
 }
 .btn{
-    background-color: #139CFF;
-    border: 1px solid #137bc5;
+    background-color: #50C5FB;
+    border: 1px solid #50C5FB;
     color:#fff;
 }
 .btn:hover{
-    background-color: #137bc5;
-}
-.form-inline{
-    justify-content: flex-end;
-}
-.form-group{
-    margin-right: 3%;
+    background-color: #36baf7;
 }

@@ -1,1 +1,18 @@
-Event page
+#Event page
+<!doctype html>
+    <html lang="en">
+
+        <title> Events </title>
+        <body>
+        {% block Content %}
+        <h1> <textarea name = "eventTitle"></textarea></h1>
+
+            <h2>
+                <textarea name="eventDescription" rows="10" cols="30">
+                    Event description
+                </textarea>
+                <button type = "create"> eventCreate</button>
+            </h2>
+        </body>
+        {% end block %}
+    </html>

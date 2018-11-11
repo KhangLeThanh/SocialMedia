@@ -19,14 +19,26 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from django.conf.urls.static import static
-from funnysociety.views import *
+from  funnysociety import views
+from django.urls import path, include
+from django.views.generic.base import TemplateView
+from django.contrib.auth.views import LoginView
+
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^$', home, name='home'),
-    url(r'^profile/$', profile, name='profile'),
-    url(r'^discussion/$', discussion, name='discussion'),
-    url(r'^event/$', event, name='event'),
+    # url(r'^$', home, name='home'),
+    url(r'^admin/', admin.site.urls), # Admin page
+    url(r'^register/$', views.UserFormView.as_view(),name='register'), #User registration page
+    path('accounts/', include('django.contrib.auth.urls')), # User sign in, sign out default pages
+    path('profile/', TemplateView.as_view(template_name='profile.html'), name='profile'), # Home page is the profile page
+    path('', LoginView.as_view(template_name='registration/login.html'), name="home"),
+  
+    url(r'^profile/create_post/$', views.create_post,name='create_post'), #User registration page
+    #url(r'^profile/$', views.profile, name='profile'),
+
+
+    #url(r'^discussion/$', discussion, name='discussion'),
+    #url(r'^event/$', event, name='event'),
 ]
 
 if settings.DEBUG:

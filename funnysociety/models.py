@@ -3,19 +3,23 @@ from __future__ import unicode_literals
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
-
-
+from django import forms
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 # Create your models here.
 
 #This model is common for everyone- DO NOT Edit without notifying others!
 class SiteUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    id = models.AutoField(primary_key=True)
-    firstName = models.CharField(max_length=100)
-    lastName = models.CharField(max_length=100)
-    telephoneNumber = models.CharField(max_length=20)
-    birthDay = models.TimeField()
+    gender = models.CharField(max_length=1,blank = True)
+    telephone = models.CharField(max_length=10,blank = True)
+    birthdate = models.DateField(null=True, blank=True)
 
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        SiteUser.objects.create(user=instance)
+    instance.siteuser.save()
 
 #Profile models by Chathura: Only Chathura will edit
 #This is a sample table structure, modify as per your requirements
@@ -28,8 +32,7 @@ class Friend(models.Model):
     isReceived = models.BooleanField()
         
 class Status(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     text = models.CharField(max_length=999)
     timestamp = models.TimeField(default=datetime.now, blank=True)
 
