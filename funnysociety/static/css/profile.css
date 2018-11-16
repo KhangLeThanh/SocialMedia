@@ -1,3 +1,6 @@
 .wrapper-contain-profile{
     padding-top: 20px;
 }
+.divider p:last-child{
+    display: none;
+}

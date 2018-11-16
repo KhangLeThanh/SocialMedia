@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
-from .models import Status
+from .models import Status, SiteUser
 from django import forms
-
 from . import models
+from django.contrib.auth.forms import UserChangeForm
+
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     telephone = forms.CharField(max_length=10,help_text='Enter 10 digits only')
@@ -27,3 +28,11 @@ class StatusForm(forms.ModelForm):
                 'placeholder': 'How are you feeling...',
             })
         }
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        exclude = ('password','is_staff','is_active','date_joined','groups','user_permissions',
+        'is_superuser','last_login','username')
+
+        

@@ -29,15 +29,18 @@ urlpatterns = [
     # url(r'^$', home, name='home'),
     url(r'^admin/', admin.site.urls), # Admin page
     url(r'^register/$', views.UserFormView.as_view(),name='register'), #User registration page
+    url(r'^edit_profile/(?P<pk>[0-9]+)/$', views.edit_profile,name='edit_profile_with_pk'), #User edit page
     path('accounts/', include('django.contrib.auth.urls')), # User sign in, sign out default pages
     path('profile/', TemplateView.as_view(template_name='profile.html'), name='profile'), # Home page is the profile page
     path('', LoginView.as_view(template_name='registration/login.html'), name="home"),
   
     url(r'^profile/create_post/$', views.create_post,name='create_post'), #User registration page
+    url(r'^profile/get_status/$', views.get_status,name='get_status'), #Get user status
+
     #url(r'^profile/$', views.profile, name='profile'),
 
 
-    #url(r'^discussion/$', discussion, name='discussion'),
+    url(r'^discussion/$', views.discussion, name='discussion')
     #url(r'^event/$', event, name='event'),
 ]
 

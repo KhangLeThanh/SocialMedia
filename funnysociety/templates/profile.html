@@ -23,7 +23,7 @@
             <section class="wrapper-contain-profile">
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-8">
                             <h2>Hi {{ user.first_name }}! Welcome to your profile!</h2>
                             <h3>What's on your mind,{{ user.first_name }} ?</h3>
                             <form action="/create_post/" method="POST" id="post-form">
@@ -33,9 +33,23 @@
                                 <input id="status_post_btn" type="submit" value="Post">
                             </form>
                         </div>
+                        <div class="col-sm-4">
+                            <section>
+                                <button class="btn">Create discussion</button>
+                            </section>
+                            <hr>
+                            <section>
+                                Display discussion title
+                            </section>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            <!--User status container-->
+            <div id="status-wrap">
+
+            </div>
                 
         {% endif %}
    
@@ -49,12 +63,20 @@
 
  $(document).ready(function() {
 
+// On status submit
 $('#post-form').on('submit', function(event){
     event.preventDefault();
     create_post();
 });
+
+
+// Load user status
+load_status();
+
 });
 
+
+//Django endpoint call to create a post
 function create_post() {
     $.ajax({
         url : "create_post/", // end point
@@ -74,6 +96,33 @@ function create_post() {
         }
     });
 };
+
+
+//Django endpoint call to create a post
+function load_status() {
+    $.ajax({
+        url : "get_status/", // end point
+        type : "GET",
+        // On success
+        success : function(data) {
+            show_status(data);
+        },
+
+        // On error
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); 
+        }
+    });
+};
+
+// Django endpoint to get user posts
+function show_status(data){
+    var status_str =''
+    $.each(data, function(i, status) {
+        status_str = status_str + "<div id='status"+i+"'><div id='status_txt'>"+status.text+"</div><div id='status_time'>"+status.timestamp+"</div></div>" 
+    })
+    $("#status-wrap").append(status_str);
+}
 
 </script>
     

@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+{% block content %}
+      <section class="header_signin">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 style="text-align: center;">FunnySociety</h1>
+                </div>
+            </div>    
+        </div>    
+      </section>
+      <section class="wrapper-login-form">
+        <div class="container">
+            <div class="row">
+              <div class="col-md-6 offset-md-3">
+                <h3>Edit Profile</h3>
+                <div class="wrap-login">
+                    <form  method="POST" class="padding">
+                        {% csrf_token %} {{ noodle_form.as_p }}
+                        <div class="divider">
+                            {{ formset.management_form }}
+                            {{ formset.as_p }}
+                        </div>
+                        <div class="wraper-button-login">
+                            <button type="submit" class="btn">Save Your Update</button>
+                        </div>
+                    </form>
+                </div>  
+              </div>
+            </div>       
+        </div>
+        
+      </section>
+      
+{% endblock %}
