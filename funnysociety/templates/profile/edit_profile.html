@@ -4,18 +4,40 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <h1 style="text-align: center;">FunnySociety</h1>
+                    <h1 style="text-align: center;">Edit Profile</h1>
                 </div>
             </div>    
         </div>    
       </section>
+        {% if messages %}
+            <section class="top_message">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {% for message in messages %}
+                                <div class="wrapp-message">
+                                    <span class="close-message">
+                                        <button type="button" class="close" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </span>
+                                    <h3 {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h3>
+                                   
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>    
+                </div>    
+            </section>
+           
+        {% endif %}
+     
       <section class="wrapper-login-form">
         <div class="container">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <h3>Edit Profile</h3>
                 <div class="wrap-login">
-                    <form  method="POST" class="padding">
+                    <form  method="POST" class="padding" id="edit-form">
                         {% csrf_token %} {{ noodle_form.as_p }}
                         <div class="divider">
                             {{ formset.management_form }}
@@ -31,5 +53,12 @@
         </div>
         
       </section>
-      
+
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('.close-message .close').click(function() {
+            $('.top_message').slideUp('slow');
+        });
+    })
+</script>          
 {% endblock %}

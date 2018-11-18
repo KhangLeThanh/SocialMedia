@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from .forms import UserForm, EditProfileForm
 from django.forms.models import inlineformset_factory
+from django.contrib import messages
 from .forms import StatusForm
 from .models import Status, SiteUser
 from django.views.decorators.http import require_http_methods
@@ -73,7 +74,8 @@ def edit_profile(request,pk):
                 if formset.is_valid():
                     created_user.save()
                     formset.save()
-                    return redirect('../../profile/')
+                    messages.success(request, 'Your profile has been updated')
+                    # return redirect('../../edit_profile/%d/'%pk)
 
         return render(request, "profile/edit_profile.html", {
             "noodle": pk,
