@@ -24,23 +24,22 @@ def update_user_profile(sender, instance, created, **kwargs):
 #Profile models by Chathura: Only Chathura will edit
 #This is a sample table structure, modify as per your requirements
 class Friend(models.Model):
-    id = models.AutoField(primary_key=True)
-    party1 = models.IntegerField()
-    party2 = models.IntegerField()
-    timestamp = models.TimeField(default=datetime.now, blank=True)
-    isPending = models.BooleanField()
-    isReceived = models.BooleanField()
+    party1 = models.OneToOneField(User,on_delete=models.CASCADE, related_name="main_party")
+    party2 =models.OneToOneField(User,on_delete=models.CASCADE,related_name="second_party")
+    timestamp = models.DateTimeField(default=datetime.now, blank=True)
+    isPendingRequest = models.BooleanField()
+    isReceivedRequest = models.BooleanField()
         
 class Status(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     text = models.CharField(max_length=999)
-    timestamp = models.TimeField(default=datetime.now, blank=True)
+    timestamp = models.DateTimeField(default=datetime.now, blank=True)
 
 class StatusComment(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
     text = models.CharField(max_length=999)
-    timestamp = models.TimeField(default=datetime.now, blank=True)
+    timestamp = models.DateTimeField(default=datetime.now, blank=True)
     statusId = models.ForeignKey(Status,on_delete=models.CASCADE)
 
 

@@ -4,3 +4,37 @@
 .divider p:last-child{
     display: none;
 }
+#friendName{
+    font-size: 20px;
+    margin-bottom: 0px;
+}
+#status_time{
+    font-size:12px;
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover{
+    border: 1px solid #50c4fb;
+    background: #50c4fb;
+}
+.ui-widget.ui-widget-content{
+    border-radius: 5px;
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+
+}
+.title-right-side-bar{
+    padding-top: 10px;
+}
+#tabs{
+    padding:10px;
+}
+.bottom-section{
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+.wrapper-greeting-profile,.wrapper-add-friend ,.wrapper-status{
+    padding: 10px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    border: 1px solid #c5c5c5;
+}

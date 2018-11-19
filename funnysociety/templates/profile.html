@@ -23,17 +23,56 @@
             <section class="wrapper-contain-profile">
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm-8">
-                            <h2>Hi {{ user.first_name }}! Welcome to your profile!</h2>
-                            <h3>What's on your mind,{{ user.first_name }} ?</h3>
-                            <form action="/create_post/" method="POST" id="post-form">
-                                {% csrf_token %} 
-                            <br>
-                                <input id="post-text" type="text" name="status">
-                                <input id="status_post_btn" type="submit" value="Post">
-                            </form>
+                        <div class="col-lg-8">
+                            <section class="bottom-section wrapper-greeting-profile">
+                                <h2>Hi {{ user.first_name }}! Welcome to your profile!</h2>
+                                <h3>What's on your mind,{{ user.first_name }} ?</h3>
+                                <br>
+                                <form action="/create_post/" method="POST" id="post-form">
+                                    {% csrf_token %} 
+                                    <input class="form-control" id="post-text" type="text" name="status">
+                                    <div class="wraper-button-login" style="margin-top: 10px;">
+                                        <button class="btn" id="status_post_btn" type="submit"> Post Your Status! </button>
+                                    </div>
+                                </form>
+                            </section>
+                            <section class="bottom-section wrapper-status">
+                                <div id="status-wrap"></div>
+                            </section>
+                            
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-lg-4">
+                            <section class="bottom-section wrapper-add-friend">
+                                <h5>Add friend </h5>
+                                <form action="/add_friend/" method="POST" id="addfriend-form">
+                                    {% csrf_token %} 
+                                    <input class="form-control" id="friend_name" type="text" name="friendname">
+                                    <div class="wraper-button-login" style="margin-top: 10px;">
+                                        <button class="btn btn-sm" id="status_post_btn" type="submit">Add </button>
+                                    </div>
+                                </form>
+                                <div id="add_friend_status"></div>
+                            </section>
+                            <hr>
+                            <section class="bottom-section wrapper-friend-request">
+                                    <div id="tabs">
+                                            <h5 class="title-right-side-bar"> Your friend requests </h5>
+                                            <ul>
+                                              <li><a href="#tabs-1">Sent Request</a></li>
+                                              <li><a href="#tabs-2">Received Request</a></li>
+                                            </ul>
+                                            <div id="tabs-1">
+                                                <div id="req_recvd"></div>
+                                            </div>
+                                            <div id="tabs-2">
+                                                <div id="req_sent"></div>
+                                            </div>
+                                            
+                                          </div>
+                                
+                               
+                            </section>
+                            <hr>
                             <section>
                                 <button class="btn">Create discussion</button>
                             </section>
@@ -46,10 +85,20 @@
                 </div>
             </section>
 
-            <!--User status container-->
-            <div id="status-wrap">
+            <!--Add user container-->
+           
 
-            </div>
+            <!--User status container-->
+          
+
+            
+            <!--User friend list container-->
+            
+           
+            <h5>I'm friends with: </h5><br>
+            <div id="cur_friends"></div>
+
+          
                 
         {% endif %}
    
@@ -57,11 +106,10 @@
 
  
 
-
-
 <script type="text/javascript"> 
 
  $(document).ready(function() {
+    $( "#tabs" ).tabs();
 
 // On status submit
 $('#post-form').on('submit', function(event){
@@ -70,13 +118,58 @@ $('#post-form').on('submit', function(event){
 });
 
 
+// On add friend
+$('#addfriend-form').on('submit', function(event){
+    event.preventDefault();
+    add_friend();
+});
+
 // Load user status
 load_status();
+
+//Load current friends
+get_friends();
 
 });
 
 
+
+
 //Django endpoint call to create a post
+function add_friend() {
+    $.ajax({
+        url : "add_friend/", // end point
+        type : "POST",
+        data : { 
+          username : $('#friend_name').val(),
+          csrfmiddlewaretoken: '{{ csrf_token }}', // for Django, add csrf_token with data
+           },
+        // On success
+        success : function(data) {
+            $('#friend_name').val('');
+
+            var friend_request_sts="Request not sent!"
+            if(data.status == "request_sent")
+                var friend_request_sts="Friend request sent!"
+
+            if(data.status == "user_not_found")
+                var friend_request_sts="User not found! Please check the user name"
+            
+            if(data.status == "already_sent")
+                var friend_request_sts="Already a friend or  request sent before! Try a different user"
+            
+            $("#add_friend_status").html("<div id=add_friend_sts_txt>"+friend_request_sts+"</div>")
+            
+        },
+
+        // On error
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); 
+        }
+    });
+};
+
+//Django endpoint call to create a status post
 function create_post() {
     $.ajax({
         url : "create_post/", // end point
@@ -87,7 +180,9 @@ function create_post() {
            },
         // On success
         success : function(json) {
-            $('#post-text').val(''); 
+            $('#post-text').val('');
+            //reload status
+            load_status(); 
         },
 
         // On error
@@ -98,7 +193,7 @@ function create_post() {
 };
 
 
-//Django endpoint call to create a post
+//Django endpoint call to get status
 function load_status() {
     $.ajax({
         url : "get_status/", // end point
@@ -115,15 +210,69 @@ function load_status() {
     });
 };
 
-// Django endpoint to get user posts
+// Django endpoint to show user posts
 function show_status(data){
     var status_str =''
     $.each(data, function(i, status) {
         status_str = status_str + "<div id='status"+i+"'><div id='status_txt'>"+status.text+"</div><div id='status_time'>"+status.timestamp+"</div></div>" 
     })
-    $("#status-wrap").append(status_str);
+    $("#status-wrap").html(status_str);
 }
 
+
+//Django endpoint call to get friends
+function get_friends() {
+    $.ajax({
+        url : "get_friends/", // end point
+        type : "GET",
+        // On success
+        success : function(data) {
+            show_friends(data);
+        },
+
+        // On error
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); 
+        }
+    });
+};
+
+
+// Django endpoint to show user friends
+function show_friends(data){
+    var friend_str_str = "<div id='cur_friends'>Current Friends("+data.length+")</div>"
+    console.log(JSON.stringify(data))
+
+    received_str ="";
+    current_friend_str ="";
+    sent_str ="";
+
+    $.each(data, function(i, data) {
+        
+        //User has received the request
+        if(data.isPendingRequest && data.isReceivedRequest == true ){
+            received_str = received_str + "<div id='friend"+i+"'><p id='friendName'>"+data.friend[0].first_name+"</p><span id='status_time'><em>"+data.timestamp+"</em></span></div>" 
+        }
+
+          //User has sent the request
+          if(data.isPendingRequest && data.isReceivedRequest == false ){
+            sent_str = sent_str + "<div id='friend"+i+"'><p id='friendName'>"+data.friend[0].first_name+"</p><span id='status_time'><em>"+data.timestamp+"</em></span></div>" 
+        }
+
+        // Both user and receiver are friends
+         if(data.isPendingRequest==false){
+            current_friend_str = current_friend_str + "<div id='friend"+i+"'><p id='friendName'>"+data.friend[0].first_name+"</p><div id='status_time'>"+data.timestamp+"</div></div>" 
+        }
+
+    
+            
+    })
+
+    $("#req_recvd").append(received_str);
+    $("#req_sent").append(sent_str);
+    $("#cur_friends").append(current_friend_str);
+
+ }
 </script>
     
 {% endblock %}

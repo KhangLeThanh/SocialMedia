@@ -36,11 +36,17 @@ urlpatterns = [
   
     url(r'^profile/create_post/$', views.create_post,name='create_post'), #User registration page
     url(r'^profile/get_status/$', views.get_status,name='get_status'), #Get user status
+    url(r'^profile/create_post/$', views.create_post,name='create_post'), #Add status post
+    url(r'^profile/get_status/$', views.get_status,name='get_status'), #Get user status
+
+    url(r'^profile/add_friend/$', views.add_friend,name='add_friend'), #Add friend
+    url(r'^profile/get_friends/$', views.get_friends,name='get_friends'), #Get current friends
+    
 
     #url(r'^profile/$', views.profile, name='profile'),
 
 
-    url(r'^discussion/$', views.discussion, name='discussion')
+    # url(r'^discussion/$', views.discussion, name='discussion')
     #url(r'^event/$', event, name='event'),
 ]
 

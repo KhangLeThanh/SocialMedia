@@ -9,13 +9,14 @@ from .forms import UserForm, EditProfileForm
 from django.forms.models import inlineformset_factory
 from django.contrib import messages
 from .forms import StatusForm
-from .models import Status, SiteUser
+from .models import Status, SiteUser,Friend
 from django.views.decorators.http import require_http_methods
 from django.http import Http404,JsonResponse,HttpResponse,HttpResponseRedirect
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-
+from django.db.models import Q
 import json
+from itertools import chain
 
 #User related views
 class UserFormView(View):
@@ -91,7 +92,7 @@ def edit_profile(request,pk):
 def create_post(request):
     if request.method == 'POST':
         post_text = request.POST.get('the_post')
-        response_data = {}
+        #response_data = {}
 
         post = Status.objects.create(text=post_text,user=request.user)
         post.save()
@@ -108,12 +109,81 @@ def create_post(request):
 def get_status(request):
     if request.method == 'GET':
         statusList = Status.objects.all().filter(user=request.user).values('text', 'timestamp') 
-        response_data = {}
+        #response_data = {}
         status_list = list(statusList)
         return JsonResponse(status_list, safe=False)
 
     else:
         return JsonResponse('', safe=False)
+
+
+#To add friend
+def add_friend(request):
+    if request.method == 'POST':
+        requestUsername = request.POST.get('username')
+
+        try:
+            newFriend = User.objects.get(username=requestUsername)
+        except User.DoesNotExist:
+            newFriend = None
+
+        #Check user availability
+        if newFriend is None:
+            return HttpResponse(
+            json.dumps({"status": "user_not_found"}),
+            content_type="application/json"
+        )
+
+        #Check user is a friend already
+        try:
+            oldFriendMain = Friend.objects.get(party1=newFriend,party2=request.user.id)
+        except Friend.DoesNotExist:
+            oldFriendMain = None
+
+        try:
+            oldFriendSecond = Friend.objects.get(party2=newFriend,party1=request.user.id)
+        except Friend.DoesNotExist:
+            oldFriendSecond = None
+
+
+        if oldFriendMain is None and oldFriendSecond is None:
+            request = Friend.objects.create(party1=request.user,party2=newFriend,isPendingRequest=True,isReceivedRequest=False)
+            return HttpResponse(
+                json.dumps({"status": "request_sent"}),
+                content_type="application/json"
+            )
+        return HttpResponse(
+            json.dumps({"status": "already_sent"}),
+            content_type="application/json"
+        )
+
+
+#To get friends
+def get_friends(request):
+    if request.method == 'GET':
+         
+        friend_List = Friend.objects.filter(Q(party1=request.user) | Q(party2=request.user))
+        #.values('party1','party2','party1__username', 'party2__username','party1__first_name','party2__first_name','timestamp','isPendingRequest','isReceivedRequest')
+        
+ 
+        data = []
+        for r in friend_List:
+
+            cur_user = User.objects.get(id=request.user.id) #gets current user's username
+            print(cur_user.id)
+
+            responseData = {
+                'friend': list(User.objects.filter(id=r.party1.id).values('id','first_name','last_name')) if cur_user.id != r.party1.id else list(User.objects.filter(id=r.party2.id).values('id','first_name','last_name')),
+                'timestamp': r.timestamp,
+                'isPendingRequest':r.isPendingRequest,
+                'isReceivedRequest': r.isReceivedRequest if cur_user.id == r.party1.id else not r.isReceivedRequest
+            }
+
+            data.append(responseData)
+        return JsonResponse(data,safe=False)
+
+
+
 
 
 # Create your views here.
