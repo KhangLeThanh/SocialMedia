@@ -395,7 +395,7 @@ function show_status(status_data,comment_data){
         old_comments = old_comments+ "<div class='old_comment' id='old_comment"+i+"'>"+comment.user__first_name+":"+comment.text+"</div>"
     });
         var comment_box = "<div id='comment"+i+"'><input class='form-control post_com' id='com_txt"+status.id+"' type='text' name='' value=''><div class='wraper-button-comment' style='margin-top: 10px;'><button class='btn btn-sm post_comment_cls' id='post_cmnt' data-id="+status.id+">Comment</button></div></div>"
-        status_str = status_str + "<div class='bottom-section  wrapper-status'><div id='status"+i+"'><div id='status_txt'>"+status.text+"</div><div id='status_time'>"+moment(status.timestamp).format('YYYY-MM-DD HH:mm')+"</div></div>" +old_comments + comment_box+'</div>'
+        status_str = status_str + "<div class='bottom-section  wrapper-status'><div id='status"+i+"'><div id='status_txt' style='font-weight:bold;'>"+status.text+"</div><div id='status_time'>"+moment(status.timestamp).format('YYYY-MM-DD HH:mm')+"</div></div>" +old_comments + comment_box+'</div>'
     })
     $("#status-wrap").html(status_str);
     
