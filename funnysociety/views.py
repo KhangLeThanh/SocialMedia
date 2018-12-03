@@ -9,7 +9,7 @@ from .forms import UserForm, EditProfileForm
 from django.forms.models import inlineformset_factory
 from django.contrib import messages
 from .forms import StatusForm
-from .models import Status, SiteUser,Friend
+from .models import Status, SiteUser,Friend,StatusComment, Discussion,DiscussionChat
 from django.views.decorators.http import require_http_methods
 from django.http import Http404,JsonResponse,HttpResponse,HttpResponseRedirect
 from django.core import serializers
@@ -76,7 +76,6 @@ def edit_profile(request,pk):
                     created_user.save()
                     formset.save()
                     messages.success(request, 'Your profile has been updated')
-                    # return redirect('../../edit_profile/%d/'%pk)
 
         return render(request, "profile/edit_profile.html", {
             "noodle": pk,
@@ -87,13 +86,104 @@ def edit_profile(request,pk):
         raise PermissionDenied
 #------End of user views-------------------
 
+#To profile friend
+def profile_friend(request,username):
+     # If no such user exists raise 404
+    try:
+        user = User.objects.get(username=username)
+    except:
+        raise Http404("User does not exist")
+
+    # Flag that determines if we should show editable elements in template
+    editable = False
+    # Handling non authenticated user
+    if request.user.is_authenticated and request.user == user:
+        editable = True
+
+    #If user is not a friend hide private data
+    try:
+        oldFriendMain = Friend.objects.get(party1=user,party2=request.user.id,isPendingRequest=False)
+    except Friend.DoesNotExist:
+        oldFriendMain = None
+
+    try:
+        oldFriendSecond = Friend.objects.get(party2=user,party1=request.user.id,isPendingRequest=False)
+    except Friend.DoesNotExist:
+        oldFriendSecond = None
+    
+    #Not a current firend
+    if request.user != user and oldFriendMain is None and oldFriendSecond is None:
+        user.siteuser.birthdate = ""
+        user.siteuser.telephone = ""
+    else:
+        status_list = Status.objects.filter(Q(user=user))
+    
+    context = locals()
+    return render(request, "profile/profile_friend.html", context)
+
+
+# Friend List Page
+def friend_list(request,username):
+     # If no such user exists raise 404
+    user = User.objects.get(username=username)
+    friend_List = Friend.objects.filter(Q(party1=user) | Q(party2=user))
+    data = []
+    for r in friend_List:
+        cur_user = User.objects.get(id=request.user.id)
+        responseData = {
+            'friend': list(User.objects.filter(id=r.party1.id).values('id','username'))if cur_user.id != r.party1.id else list(User.objects.filter(id=r.party2.id).values('id','username')),
+        }
+        data.append(responseData)
+    template = 'friend_list.html'    
+    return render(request, template, {'data':data})
+
+
+
+# To create user discussion
+def create_discussion(request):
+    if request.method == 'POST':
+        post_title = request.POST.get('title')
+        post_content = request.POST.get('content')
+        post = Discussion.objects.create(title=post_title,content=post_content,user=request.user)
+        post.save()
+        return redirect('profile')
+    
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
+#To get user discussion
+def get_discussion(request,username=None):
+    if request.method == 'GET':
+
+        query_user = request.user
+        if username is not None:
+            query_user=User.objects.get(username=username)
+
+        discussionList = Discussion.objects.all().values('id','content', 'title','timestamp') 
+        discussion_list = list(discussionList)
+        return JsonResponse(discussion_list, safe=False)
+
+    else:
+        return JsonResponse('', safe=False)   
+
+#To get  discussion page
+
+def discussion_page(request,pk):
+    try:
+        discussions = Discussion.objects.get(pk=pk)
+    except:
+        raise Http404("User does not exist")
+    template = "discussion_page.html"
+    return render(request, template, {'discussions': discussions})   
+
+
 
 # To post user status
 def create_post(request):
     if request.method == 'POST':
         post_text = request.POST.get('the_post')
-        #response_data = {}
-
         post = Status.objects.create(text=post_text,user=request.user)
         post.save()
         return redirect('profile')
@@ -106,17 +196,65 @@ def create_post(request):
 
 
 #To get user status
-def get_status(request):
+def get_status(request,username=None):
     if request.method == 'GET':
-        statusList = Status.objects.all().filter(user=request.user).values('text', 'timestamp') 
-        #response_data = {}
+
+        query_user = request.user
+        if username is not None:
+            query_user=User.objects.get(username=username)
+
+        statusList = Status.objects.all().filter(user=query_user).values('id','text', 'timestamp').order_by('-timestamp') 
         status_list = list(statusList)
         return JsonResponse(status_list, safe=False)
 
     else:
         return JsonResponse('', safe=False)
 
+# To post a comment
+def post_comment(request,username=None):
+    if request.method == 'POST':
+        status_id = request.POST.get('status_id')
+        comment_txt = request.POST.get('comment_txt')
+        status = Status.objects.get(id=status_id)
+        request = StatusComment.objects.create(status=status,user=request.user,text=comment_txt)
+        return HttpResponse(
+            json.dumps({"status": "comment_added"}),
+            content_type="application/json"
+            )
 
+
+# Get all comments of the provided user
+def get_comments(request,username=None):
+    if request.method == 'GET':
+        query_user = request.user
+        if username is not None:
+            query_user=User.objects.get(username=username)
+
+        status_list = Status.objects.filter(Q(user=query_user))
+        comments = StatusComment.objects.all().filter(status__in=status_list).values('status_id','id','user__first_name','text', 'timestamp')
+        comment_list = list(comments)
+        return JsonResponse(comment_list, safe=False)
+
+#To search friend/discussion
+def search(request):
+    if 'q' in request.GET and request.GET['q']:
+        q = request.GET['q']
+        if q:
+            users = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q)| Q(last_name__icontains=q))
+            discussions = Discussion.objects.filter(Q(title__icontains=q))
+            if users:
+                return render(request, 'search.html', {'users': users, 'query': q})
+            elif discussions:
+                return render(request, 'search.html', {'discussions': discussions, 'query': q})
+            else:
+                messages.error(request,'Results Not Found')
+        else:
+            return HttpResponseRedirect('profile')
+    return render(request, 'search.html', {'messages': 'Results Not Found'})    
+
+ 
+
+   
 #To add friend
 def add_friend(request):
     if request.method == 'POST':
@@ -126,6 +264,14 @@ def add_friend(request):
             newFriend = User.objects.get(username=requestUsername)
         except User.DoesNotExist:
             newFriend = None
+
+        #Check same user or not
+        if newFriend == request.user:
+            return HttpResponse(
+            json.dumps({"status": "same_user"}),
+            content_type="application/json"
+        )
+
 
         #Check user availability
         if newFriend is None:
@@ -163,17 +309,14 @@ def get_friends(request):
     if request.method == 'GET':
          
         friend_List = Friend.objects.filter(Q(party1=request.user) | Q(party2=request.user))
-        #.values('party1','party2','party1__username', 'party2__username','party1__first_name','party2__first_name','timestamp','isPendingRequest','isReceivedRequest')
-        
- 
         data = []
         for r in friend_List:
 
-            cur_user = User.objects.get(id=request.user.id) #gets current user's username
-            print(cur_user.id)
+            cur_user = User.objects.get(id=request.user.id) #get current user's username
+     
 
             responseData = {
-                'friend': list(User.objects.filter(id=r.party1.id).values('id','first_name','last_name')) if cur_user.id != r.party1.id else list(User.objects.filter(id=r.party2.id).values('id','first_name','last_name')),
+                'friend': list(User.objects.filter(id=r.party1.id).values('id','first_name','last_name','username')) if cur_user.id != r.party1.id else list(User.objects.filter(id=r.party2.id).values('id','first_name','last_name','username')),
                 'timestamp': r.timestamp,
                 'isPendingRequest':r.isPendingRequest,
                 'isReceivedRequest': r.isReceivedRequest if cur_user.id == r.party1.id else not r.isReceivedRequest
@@ -183,21 +326,122 @@ def get_friends(request):
         return JsonResponse(data,safe=False)
 
 
+#Accept a new friend
+def accept_friend(request):
+    if request.method == 'POST':
+        new_friend_id = request.POST.get('friend_id')
+        newFriend = User.objects.get(pk=new_friend_id)
+        try:
+            request = Friend.objects.filter(Q(party1=newFriend) & Q(party2=request.user)).update(isPendingRequest=False)
+            return HttpResponse(
+                json.dumps({"status": "friend_accepted"}),
+                content_type="application/json"
+            )
+        except:
+            return HttpResponse(
+                json.dumps({"status": "error"}),
+                content_type="application/json"
+            )
 
+#Decline a friend request
+def decline_friend(request):
+    if request.method == 'POST':
+        new_friend_id = request.POST.get('friend_id')
+        newFriend = User.objects.get(pk=new_friend_id)
+
+        try:
+            request = Friend.objects.filter(Q(party1=newFriend) & Q(party2=request.user)).get()
+            request.delete()
+            return HttpResponse(
+                json.dumps({"status": "friend_declined"}),
+                content_type="application/json"
+            )
+
+        except:
+            return HttpResponse(
+                json.dumps({"status": "error"}),
+                 content_type="application/json"
+            )
+
+#Delete a friend request
+def delete_friend_request(request):
+    if request.method == 'POST':
+        new_friend_id = request.POST.get('friend_id')
+        newFriend = User.objects.get(pk=new_friend_id)
+
+        try:
+            request = Friend.objects.filter(Q(party2=newFriend) & Q(party1=request.user)).get()
+            request.delete()
+            return HttpResponse(
+                json.dumps({"status": "friend_declined"}),
+                content_type="application/json"
+            )
+
+        except:
+            return HttpResponse(
+                json.dumps({"status": "error"}),
+                 content_type="application/json"
+            )
+
+
+#Delete a current friend
+def delete_friend(request):
+    if request.method == 'POST':
+        new_friend_id = request.POST.get('friend_id')
+        newFriend = User.objects.get(pk=new_friend_id)
+
+        try:
+            request = Friend.objects.filter(Q(party2=newFriend) & Q(party1=request.user)).get()
+            request.delete()
+            return HttpResponse(
+                json.dumps({"status": "friend_deleted"}),
+                content_type="application/json"
+            )
+
+        except:
+            try:
+                request = Friend.objects.filter(Q(party1=newFriend) & Q(party2=request.user)).get()
+                request.delete()
+                return HttpResponse(
+                    json.dumps({"status": "friend_deleted"}),
+                    content_type="application/json"
+                )
+            except:
+
+                return HttpResponse(
+                     json.dumps({"status": "error"}),
+                     content_type="application/json"
+                 )
+
+
+  
 
 
 # Create your views here.
+def post_chat(request,pk=0):
+    if request.method == "POST":
+        chat_text = request.POST.get('chat_text')
+        discussion = Discussion.objects.get(pk=pk)
+
+        chat = DiscussionChat.objects.create(user=request.user,discussion=discussion,text=chat_text)
+        chat.save()
+        
+    return HttpResponse(
+        json.dumps({"status": "chat_added"}),
+        content_type="application/json"
+        )
 
 
-def profile(request):
-    template = "profile.html" 
-    context = {}
-    return render(request, template, context)
+def load_chat(request,pk=0):
+    if request.method == 'GET':
+        discussion_id = request.POST.get('chat_text')
+        discussion = Discussion.objects.get(pk=pk)
 
-def discussion(request):
-    template = "discussion_page.html"
-    context = {}
-    return render(request, template, context)
+    chats = DiscussionChat.objects.all().filter(discussion=discussion).order_by('timestamp').values('user__first_name','text', 'timestamp')
+    chat_list = list(chats)
+    return JsonResponse(chat_list, safe=False)
+
+
 
 def event(request):
     template = "event_page.html"

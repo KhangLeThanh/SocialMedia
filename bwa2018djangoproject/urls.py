@@ -33,20 +33,40 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')), # User sign in, sign out default pages
     path('profile/', TemplateView.as_view(template_name='profile.html'), name='profile'), # Home page is the profile page
     path('', LoginView.as_view(template_name='registration/login.html'), name="home"),
-  
+
+    url(r'^profile/create_discussion/$', views.create_discussion,name='create_discussion'), #Create discussion
+    url(r'^profile/get_discussion/$', views.get_discussion,name='get_discussion'), #Get user discussion
+    url(r'^profile/discussion/(?P<pk>[0-9]+)/$', views.discussion_page,name='discussion_page'), #Get user discussion
     url(r'^profile/create_post/$', views.create_post,name='create_post'), #User registration page
     url(r'^profile/get_status/$', views.get_status,name='get_status'), #Get user status
+    url(r'^profile/(?P<username>[\w\-]+)/get_status/$', views.get_status,name='get_status'), #Get user status
     url(r'^profile/create_post/$', views.create_post,name='create_post'), #Add status post
-    url(r'^profile/get_status/$', views.get_status,name='get_status'), #Get user status
+  
+
+    url(r'^profile/post_comment/$', views.post_comment,name='post_comment'), #Post comment
+    url(r'^profile/(?P<username>[\w\-]+)/post_comment/$', views.post_comment,name='post_comment'), #Post comment
+
+    url(r'^profile/get_comments/$', views.get_comments,name='get_comments'), #Get comments
+    url(r'^profile/(?P<username>[\w\-]+)/get_comments/$', views.get_comments,name='get_comments'), #Get comments
+
 
     url(r'^profile/add_friend/$', views.add_friend,name='add_friend'), #Add friend
     url(r'^profile/get_friends/$', views.get_friends,name='get_friends'), #Get current friends
-    
 
-    #url(r'^profile/$', views.profile, name='profile'),
+    url(r'^profile/accept_friend/$', views.accept_friend,name='accept_friend'), #Accept friend request
+    url(r'^profile/decline_friend/$', views.decline_friend,name='decline_friend'), #Decline friend request
+    url(r'^profile/delete_friend_request/$', views.delete_friend_request,name='delete_friend_request'), #Delete friend request
+     url(r'^profile/delete_friend/$', views.delete_friend,name='delete_friend'), #Delete friend
+    url(r'^profile/(?P<username>[\w\-]+)/friend_list/$', views.friend_list,name='friend_list'), # Friend List Page
+    url(r'^profile/search/?$', views.search,name='search'), #Search friend / discussion
+    url(r'^profile/(?P<username>[\w\-]+)/$', views.profile_friend,name='profile_friend'), #Profile friend
 
 
-    # url(r'^discussion/$', views.discussion, name='discussion')
+    url(r'^profile/discussion/(?P<pk>[0-9]+)/post_chat/$', views.post_chat,name='post_chat'), #Post user chats
+    url(r'^profile/discussion/(?P<pk>[0-9]+)/load_chat/$', views.load_chat,name='load_chat'), #Get discussion chats
+
+
+
     #url(r'^event/$', event, name='event'),
 ]
 

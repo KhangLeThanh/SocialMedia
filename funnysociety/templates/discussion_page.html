@@ -1,15 +1,117 @@
-Discussion page
-<!doctype html>
-    <html lang="en">
+{% extends 'index.html' %}
 
-     <h1>Create Discussion </h1>
-     <form method = "post">
-            <h2>
+{% block title %}Discussion{% endblock %}
+{% block content %}
+    <section class="wrapper-contain-profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="bottom-section wrapper-section">
+                        <h1 style="text-align: center; text-transform: capitalize;">{{discussions.title}}</h1>
+                        <h5>Description:{{discussions.content}}</h5>
+                        <hr>
+                        <div id = "chat_wrap">
+                        </div>
+                      
+                        
+                    </div>
+                    <div id = "chat_bar">
+                        <form action="/post_chat/" method="POST" id="postchat-form">
+                            {% csrf_token %} 
+                            <input class="form-control" id="chat-text" type="text" name="chat">
+                            <div class="wrapper-button-chat">
+                                <button class="btn" id="chat_post_btn" type="submit">Reply</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>    
+            </div>     
+        </div>    
+    </section>    
+   
 
-                <textarea rows = 3 cols = 20>
 
-                </textarea>
-                <input type="submit" name = "submitDiscussion">
 
-            </h2>
-     </form>
+ 
+
+
+<script type="text/javascript"> 
+
+ $(document).ready(function() {
+
+    load_chat()
+
+    
+// On chat submit
+    $('#postchat-form').on('submit', function(event){
+        event.preventDefault();
+        post_chat();
+    });
+
+// Load chat every 5000 miliseconds
+window.setInterval(function(){
+    load_chat()
+}, 5000);
+
+});
+
+
+function post_chat() {
+
+if($('#chat-text').val()=="")
+   return;
+
+$.ajax({
+   url : "post_chat/", // end point
+   type : "POST",
+   data : { 
+     chat_text : $('#chat-text').val(),
+     csrfmiddlewaretoken: '{{ csrf_token }}', // for Django, add csrf_token with data
+      },
+   // On success
+   success : function(json) {
+       $('#chat-text').val('');
+       load_chat()
+   },
+
+   // On error
+   error : function(xhr,errmsg,err) {
+       console.log("error");
+       console.log(xhr.status + ": " + xhr.responseText); 
+   }
+});
+};
+
+function  load_chat(){
+    $.ajax({
+        url : "load_chat/", // end point
+        type : "GET",
+        // On success
+        success : function(data) {
+           
+            show_chats(data)
+        },
+
+        // On error
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); 
+        }
+    });
+}
+
+
+function show_chats(data){
+    console.log(JSON.stringify(data))
+    var chats_str =''
+    $.each(data, function(i, chat) {
+        chats_str = chats_str + "<div id='chat"+i+"'><div><p style='font-weight:bold;'>"+chat.user__first_name+" <span style='font-size: 12px; color: #717274; font-weight: normal;'>"+moment(chat.timestamp).format('YYYY-MM-DD HH:mm')+"</span> </p><p>"+chat.text+"</p></div></div></div><hr>" 
+            
+    })
+    $("#chat_wrap").html(chats_str);
+}
+</script>
+
+
+
+{% endblock %}

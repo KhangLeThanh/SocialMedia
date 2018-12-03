@@ -22,10 +22,9 @@ def update_user_profile(sender, instance, created, **kwargs):
     instance.siteuser.save()
 
 #Profile models by Chathura: Only Chathura will edit
-#This is a sample table structure, modify as per your requirements
 class Friend(models.Model):
-    party1 = models.OneToOneField(User,on_delete=models.CASCADE, related_name="main_party")
-    party2 =models.OneToOneField(User,on_delete=models.CASCADE,related_name="second_party")
+    party1 = models.ForeignKey(User, unique=False, on_delete=models.CASCADE,related_name="main_party")
+    party2 =models.ForeignKey(User, unique=False, on_delete=models.CASCADE,related_name="second_party")
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     isPendingRequest = models.BooleanField()
     isReceivedRequest = models.BooleanField()
@@ -36,20 +35,31 @@ class Status(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
 
 class StatusComment(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
+    status = models.ForeignKey(Status,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, unique=False, on_delete=models.CASCADE,related_name="comment_party")
     text = models.CharField(max_length=999)
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
-    statusId = models.ForeignKey(Status,on_delete=models.CASCADE)
+    
 
 
 #Discussion models by Le:  Only Le will edit
 #This is a sample table structure, modify as per your requirements
 class Discussion(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(SiteUser,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     timestamp = models.TimeField(default=datetime.now, blank=True)
-    
+    title = models.CharField(max_length=100, blank=True, null=True)
+    content = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-timestamp',]
+
+class DiscussionChat(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    discussion = models.ForeignKey(Discussion,on_delete=models.CASCADE)
+    text = models.CharField(max_length=999, blank=False, null=False)
+    timestamp = models.DateTimeField(default=datetime.now, blank=True)
+
+
 
 #Events models by Chris:   Only Chris will edit
 #This is a sample table structure, modify as per your requirements
