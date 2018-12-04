@@ -102,6 +102,8 @@
                                 <ul id="discussion-wrap">
                                     
                                 </ul>     
+                                <span class="show_button"><a href="#">Show all</a></span>   
+
                             </section>
 
                            
@@ -304,16 +306,16 @@ function show_discussion(data){
     })
     
     $("#discussion-wrap").html(discussion_str);
-    // $('ul#discussion-wrap li:gt(2)').hide();
-    //     var l = $('#discussion-wrap li').length;
-    //     if (l > 3) {
-    //         $('.show_button').show();
-    //     } else {
-    //         $('.show_button').hide();
-    //     }
-    //     $('.show_button').click(function () {
-    //         $('ul#discussion-wrap li:gt(2)').slideToggle('slow');
-    //     });
+    $('ul#discussion-wrap li:gt(2)').hide();
+        var l = $('#discussion-wrap li').length;
+        if (l > 3) {
+            $('.show_button').show();
+        } else {
+            $('.show_button').hide();
+        }
+        $('.show_button').click(function () {
+            $('ul#discussion-wrap li:gt(2)').slideToggle('slow');
+        });
 }
 
 //Django endpoint call to create a status post
